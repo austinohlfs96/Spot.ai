@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Box } from '@material-ui/core';
 import ResponseDisplay from './ResponseDisplay';
-import Avatar from './Avatar';
 
 const Chat = () => {
   const [message, setMessage] = useState('');
