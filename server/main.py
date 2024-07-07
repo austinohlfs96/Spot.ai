@@ -15,6 +15,8 @@ logging.basicConfig(level=logging.INFO)
 # Load environment variables from the .env file
 load_dotenv()
 
+print(os.getenv('OPENAI_API_KEY'))
+
 # Get the API key from the environment variable
 api_key = os.getenv('OPENAI_API_KEY')
 if not api_key:
