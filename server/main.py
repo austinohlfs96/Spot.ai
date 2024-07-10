@@ -25,7 +25,7 @@ if not api_key:
 openai.api_key = api_key
 
 # Initialize Flask app and enable CORS
-app = Flask(__name__, static_folder='build', static_url_path='')
+app = Flask(__name__, static_folder='../client/build', static_url_path='')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 CORS(app)
 
