@@ -10,7 +10,7 @@ function App() {
     <Container style={{padding: '0'}}>
       <Header/>
       <Chat />
-      <Footer style={{marginTop: '0px'}}/>
+      <Footer style={{marginTop: '10px'}}/>
     </Container>
   );
 }
