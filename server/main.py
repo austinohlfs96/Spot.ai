@@ -123,7 +123,10 @@ def clear():
 @app.route('/<path:path>')
 def serve_react_app(path):
     try:
-        return send_from_directory(app.static_folder, 'index.html')
+        if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+            return send_from_directory(app.static_folder, path)
+        else:
+            return send_from_directory(app.static_folder, 'index.html')
     except Exception as e:
         logging.error(f"Error serving React app: {e}")
         return jsonify({'response': 'Error serving React app.'}), 500
