@@ -119,14 +119,15 @@ def clear():
     ]
     return jsonify({'response': 'Conversation history cleared.'})
 
-# Serve React static files
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react_app(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    else:
+    try:
         return send_from_directory(app.static_folder, 'index.html')
+    except Exception as e:
+        logging.error(f"Error serving React app: {e}")
+        return jsonify({'response': 'Error serving React app.'}), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
