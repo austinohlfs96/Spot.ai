@@ -25,7 +25,7 @@ function Footer() {
         {'Coded with '}
         <span className={classes.heart}>❤️</span>
         {' by '}
-        <Link href="http://yourpersonalwebpage.com" className={classes.link}>
+        <Link href="http://austinohlfs.com" className={classes.link}>
           Austin Ohlfs
         </Link>
       </Typography>
