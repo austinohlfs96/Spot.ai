@@ -4,7 +4,7 @@ import os
 import logging
 import time
 import datetime  # Import datetime module
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import openai
 from dotenv import load_dotenv
