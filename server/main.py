@@ -25,8 +25,8 @@ if not api_key:
 openai.api_key = api_key
 
 # Initialize Flask app and enable CORS
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')  # Replace with your own secret key
+app = Flask(__name__, static_folder='build', static_url_path='')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
 CORS(app)
 
 # Function to get current date and time
@@ -118,6 +118,15 @@ def clear():
         {"role": "system", "content": f"You are a very insightful local guide, with all the best tips of things to do, see, and places to eat from the most popular places to hidden gems. You also will provide the user with the hours of the establishments if available as well as links to their webpages and links to coupon deals and information about deals, specials, or happy hours. Your goal is to save the user time and money, like a concierge when the users are in a new place on vacation. However, you should only provide information about local establishments and events. You can also hold a conversation with the user by remembering previous messages for context. The current date and time is {get_current_datetime()}. However, you should only provide information about local establishments and events. Do not provide information that is not related to local establishments or events."}
     ]
     return jsonify({'response': 'Conversation history cleared.'})
+
+# Serve React static files
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react_app(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
