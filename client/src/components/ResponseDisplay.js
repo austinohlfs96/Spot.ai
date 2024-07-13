@@ -2,26 +2,25 @@ import React from 'react';
 import { Box, Typography, CircularProgress } from '@material-ui/core';
 import Message from './Message';
 import Avatar from './Avatar';
+import Bone from './Bone';
 
-function ResponseDisplay({ messages = [], isLoading }) {
-  // Get the most recent messages from user and AI
+function ResponseDisplay({ messages = [], isLoading, isThrown }) {
   const recentUserMessage = messages.filter(msg => msg.sender === 'user').slice(-1)[0];
   const recentAiMessage = messages.filter(msg => msg.sender === 'ai').slice(-1)[0];
 
   return (
     <Box mt={4} style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', position: 'relative', backgroundColor: '#4F8EDB' }}>
-      <Box style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', width: '100%' }}>
-        {/* Display the user's message below the avatar */}
+      <Box style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', width: '100%', position: 'relative' }}>
         {recentUserMessage && (
           <Box style={{ width: 'auto', display: 'flex', alignSelf: 'flex-start', marginBottom: '20px', marginLeft: '20px', marginTop: '20px' }}>
             <Message key={recentUserMessage.id} message={recentUserMessage.content} sender={recentUserMessage.sender} />
           </Box>
         )}
 
-        {/* Display the avatar */}
         <Avatar />
+        
+        <Bone isThrown={isThrown} style={{ top: '50%', left: '10%' }} /> {/* Adjust position as needed */}
 
-        {/* Display the AI's message above the avatar */}
         <Box 
           style={{ 
             position: 'relative', 
@@ -64,7 +63,6 @@ function ResponseDisplay({ messages = [], isLoading }) {
           />
         </Box>
 
-        {/* Display a thought bubble if loading */}
         {isLoading && (
           <Box
             style={{

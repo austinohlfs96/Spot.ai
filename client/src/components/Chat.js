@@ -6,8 +6,8 @@ const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isThrown, setIsThrown] = useState(false);
 
-  // Send introductory message on mount
   useEffect(() => {
     const introMessage = {
       content: "Hello! I'm Spot, your local expert. I'm here to help you find the best things to do, see, and eat in any location. Whether you're planning a trip or just looking for something fun to do in your own town, I've got you covered. I can even find you some great deals! How can I assist you today?",
@@ -36,11 +36,16 @@ const Chat = () => {
     }
   };
 
+  const handleThrow = () => {
+    setIsThrown(true);
+    setTimeout(() => {
+      setIsThrown(false);
+    }, 1000);
+  };
+
   return (
-    <Container style={{padding: '0'}}>
-      <div style={{ maxHeight: '600px', overflow: 'scroll' }}>
-        <ResponseDisplay messages={messages} isLoading={loading} />
-      </div>
+    <Container style={{ padding: '0' }}>
+      <ResponseDisplay messages={messages} isLoading={loading} isThrown={isThrown} />
       <Box mt={4}>
         <TextField
           label="Ask Spot..."
@@ -52,11 +57,17 @@ const Chat = () => {
           onChange={(e) => setMessage(e.target.value)}
           disabled={loading}
         />
-        <Box mt={2} textAlign="right">
+        </Box>
+        <Box mt={2} textAlign="right" style={{display: "flex", justifyContent: "space-around"}}>
           <Button variant="contained" color="primary" onClick={handleSendMessage} disabled={loading}>
             {loading ? 'Sending...' : 'Send'}
           </Button>
-        </Box>
+        {/* </Box>
+      
+      <Box mt={2} textAlign="right"> */}
+        <Button variant="contained" color="secondary" onClick={handleThrow}>
+          Throw Bone
+        </Button>
       </Box>
     </Container>
   );
