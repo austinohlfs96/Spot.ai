@@ -9,41 +9,41 @@ const Container = styled.div`
 const Avatar = () => {
   return (
     <Container style={{alignSelf: "end"}}>
-      <div class="husky">
-  <div class="mane">
-    <div class="coat"></div>
+      <div className="husky">
+  <div className="mane">
+    <div className="coat"></div>
   </div>
-  <div class="body">
-    <div class="head">
-      <div class="ear"></div>
-      <div class="ear"></div>
-      <div class="face">
-        <div class="eye"></div>
-        <div class="eye"></div>
-        <div class="nose"></div>
-        <div class="mouth">
-          <div class="lips"></div>
-          <div class="tongue"></div>
+  <div className="body">
+    <div className="head">
+      <div className="ear"></div>
+      <div className="ear"></div>
+      <div className="face">
+        <div className="eye"></div>
+        <div className="eye"></div>
+        <div className="nose"></div>
+        <div className="mouth">
+          <div className="lips"></div>
+          <div className="tongue"></div>
         </div>
       </div>
     </div>
-    <div class="torso"></div>
+    <div className="torso"></div>
   </div>
-  <div class="legs">
-    <div class="front-legs">
-      <div class="leg"></div>
-      <div class="leg"></div>
+  <div className="legs">
+    <div className="front-legs">
+      <div className="leg"></div>
+      <div className="leg"></div>
     </div>
-    <div class="hind-leg">
+    <div className="hind-leg">
     </div>
   </div>
-  <div class="tail">
-    <div class="tail">
-      <div class="tail">
-        <div class="tail">
-          <div class="tail">
-            <div class="tail">
-              <div class="tail"></div>
+  <div className="tail">
+    <div className="tail">
+      <div className="tail">
+        <div className="tail">
+          <div className="tail">
+            <div className="tail">
+              <div className="tail"></div>
             </div>
           </div>
         </div>
@@ -85,3 +85,4 @@ const Avatar = () => {
 };
 
 export default Avatar;
+

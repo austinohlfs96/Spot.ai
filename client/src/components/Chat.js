@@ -22,7 +22,7 @@ const Chat = () => {
       setMessages(prevMessages => [...prevMessages, userMessage]);
       setLoading(true);
 
-      const response = await fetch('/ask', {
+      const response = await fetch('http://localhost:5555/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
@@ -42,6 +42,7 @@ const Chat = () => {
       setIsThrown(false);
     }, 1000);
   };
+
 
   return (
     <Container style={{ padding: '0' }}>

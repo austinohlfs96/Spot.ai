@@ -161,6 +161,7 @@ Remember, your primary function is to assist with local information. Politely de
 ]
     return jsonify({'response': 'Conversation history cleared.'})
 
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react_app(path):

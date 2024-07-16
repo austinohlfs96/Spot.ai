@@ -1,10 +1,33 @@
-import React from 'react';
-import { Box, Typography, CircularProgress } from '@material-ui/core';
+import React, { useRef, useState, useEffect } from 'react';
+import { Box, Typography } from '@material-ui/core';
 import Message from './Message';
 import Avatar from './Avatar';
 import Bone from './Bone';
 
+
+
 function ResponseDisplay({ messages = [], isLoading, isThrown }) {
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const mouthRef = useRef(null);
+  
+
+  useEffect(() => {
+    const updateCoordinates = () => {
+      if (mouthRef.current) {
+        const mouthRect = mouthRef.current.getBoundingClientRect();
+        console.log(mouthRect);
+        setCoords({
+          x: mouthRect.left, // Adjust for bone width
+          y: mouthRect.top  // Adjust for bone height
+        });
+      }
+    };
+    updateCoordinates();
+
+    window.addEventListener('resize', updateCoordinates);
+    return () => window.removeEventListener('resize', updateCoordinates);
+  }, [isThrown]);
+
   const recentUserMessage = messages.filter(msg => msg.sender === 'user').slice(-1)[0];
   const recentAiMessage = messages.filter(msg => msg.sender === 'ai').slice(-1)[0];
 
@@ -17,9 +40,11 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
           </Box>
         )}
 
-        <Avatar />
-        
-        <Bone isThrown={isThrown} style={{ top: '50%', left: '10%' }} /> {/* Adjust position as needed */}
+        <div ref={mouthRef} style={{ position: 'relative' }}>
+          <Avatar />
+        </div>
+
+        <Bone isThrown={isThrown} x={coords.x} y={coords.y} />
 
         <Box 
           style={{ 
@@ -37,17 +62,19 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
             margin: '20px',
           }}
         >
-          {isLoading ? (
-            <Typography variant="body1" style={{ color: '#333' }}>
-              Thinking...
-            </Typography>
-          ) : (
-            recentAiMessage && (
-              <Typography variant="body1" style={{ color: '#333' }}>
-                <Message message={recentAiMessage.content} sender={recentAiMessage.sender} />
+          <div>
+            {isLoading ? (
+              <Typography variant="body1" style={{ color: '#333', minWidth: '80px' }}>
+                Thinking<span className="ellipsis"></span>
               </Typography>
-            )
-          )}
+            ) : (
+              recentAiMessage && (
+                <Typography variant="body1" style={{ color: '#333' }}>
+                  <Message message={recentAiMessage.content} sender={recentAiMessage.sender} />
+                </Typography>
+              )
+            )}
+          </div>
           <Box
             style={{
               position: 'absolute',
@@ -62,42 +89,6 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
             }}
           />
         </Box>
-
-        {isLoading && (
-          <Box
-            style={{
-              position: 'absolute',
-              top: '-80px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              backgroundColor: '#f8f9fa',
-              padding: '10px 20px',
-              borderRadius: '20px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              marginTop: '20px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <CircularProgress size={24} />
-            <Typography variant="body2" style={{ marginLeft: '10px' }}>
-              Thinking...
-            </Typography>
-            <Box
-              style={{
-                position: 'absolute',
-                bottom: '-10px',
-                left: '50%',
-                width: '0',
-                height: '0',
-                borderLeft: '10px solid transparent',
-                borderRight: '10px solid transparent',
-                borderTop: '10px solid #f8f9fa',
-                transform: 'translateX(-50%)',
-              }}
-            />
-          </Box>
-        )}
       </Box>
     </Box>
   );
