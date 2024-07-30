@@ -24,10 +24,6 @@ function Footer() {
     <Box className={classes.footer} mt={5}>
       
       <Typography variant="body2" color="textSecondary" align="center">
-        {'Powered by '}
-        <StackIcon name='openai' title='openai' style={{ width: '20px', height: '20px' }}/>
-      </Typography>
-      <Typography variant="body2" color="textSecondary" align="center">
         {'Coded with '}
         <span className={classes.heart}>❤️</span>
         {' by '}
@@ -39,6 +35,10 @@ function Footer() {
         {'© '}
         {new Date().getFullYear()}
         {' Spot. All rights reserved.'}
+      </Typography>
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Powered by '}
+        <StackIcon name='openai' title='openai' style={{ width: '20px', height: '20px' }}/>
       </Typography>
     </Box>
   );
