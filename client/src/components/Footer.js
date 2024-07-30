@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import StackIcon from 'tech-stack-icons';
 
 const useStyles = makeStyles((theme) => ({
   footer: {
@@ -21,6 +22,11 @@ function Footer() {
 
   return (
     <Box className={classes.footer} mt={5}>
+      
+      <Typography variant="body2" color="textSecondary" align="center">
+        {'Powered by '}
+        <StackIcon name='openai' title='openai' style={{ width: '20px', height: '20px' }}/>
+      </Typography>
       <Typography variant="body2" color="textSecondary" align="center">
         {'Coded with '}
         <span className={classes.heart}>❤️</span>
