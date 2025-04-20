@@ -121,9 +121,9 @@ const Chat = () => {
     }, 1000);
   };
 
-  const toggleTTS = () => {
-    setIsTTSOn(!isTTSOn);
-  };
+  // const toggleTTS = () => {
+  //   setIsTTSOn(!isTTSOn);
+  // };
 
   return (
     <Container style={{ padding: '0' }}>
