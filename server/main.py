@@ -1,7 +1,7 @@
 import os
 import logging
 import openai
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from weather import WeatherService
@@ -17,13 +17,13 @@ weather_api_key = os.getenv('WEATHER_API_KEY')
 maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Initialize Flask app and enable CORS
+app = Flask(__name__, static_folder='client/build', static_url_path='')
+CORS(app)
+
 # Initialize services
 weather_service = WeatherService(weather_api_key)
 traffic_service = TrafficService(maps_api_key)
-
-# Initialize Flask app
-app = Flask(__name__)
-CORS(app)
 
 # Load knowledge base
 knowledge_base_path = 'knowledge_base.txt'
@@ -72,13 +72,11 @@ def generate_contextual_prompt(user_question, user_location=None, reservation_de
     traffic_info = ""
     location_info = ""
 
-    # Weather at current location
     if user_location:
         weather = weather_service.fetch_weather(user_location)
         if weather:
             weather_info += f"\nDetailed weather at your location ({user_location}):\n{weather_service.format_weather_info(weather, user_location)}\n"
 
-    # Weather & details at reservation location
     if reservation_details:
         destination = reservation_details.get('destination')
         reservation_date = reservation_details.get('date')
@@ -91,18 +89,15 @@ def generate_contextual_prompt(user_question, user_location=None, reservation_de
         if reservation_date:
             location_info += f"Reservation date: {reservation_date}\n"
 
-    # Route weather
     if "route" in user_question.lower() or "travel" in user_question.lower():
         key_stops = ["Parker", "Idaho Springs", "Silverthorne", "Vail"]
         weather_info += f"\nWeather along key stops:\n{weather_service.get_weather_along_route(key_stops)}"
 
-    # Add traffic summary if origin/destination found in question
     origin, destination = extract_origin_destination(user_question)
     if origin and destination:
         traffic_data = traffic_service.get_traffic_summary(origin, destination)
         traffic_info = traffic_service.format_traffic_info(traffic_data)
 
-    # Final prompt construction
     prompt = f"""
 You are Spot, the official AI assistant for SpotSurfer Parking.
 Your job is to provide helpful, concise, and always SpotSurfer-focused parking advice, suggestions, and answers.
@@ -129,7 +124,8 @@ Answer:
 """
     return prompt
 
-# Flask route to handle chatbot queries
+# === Routes ===
+
 @app.route('/ask', methods=['POST'])
 def ask():
     try:
@@ -155,6 +151,16 @@ def ask():
             "status": "error"
         }), 500
 
-# Run the Flask app
+# Serve React frontend
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# React Router fallback
+@app.errorhandler(404)
+def serve_fallback(e):
+    return send_from_directory(app.static_folder, 'index.html')
+
+# Run the app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
