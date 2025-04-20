@@ -154,13 +154,6 @@ def ask():
             "response": "There was an error processing your request.",
             "status": "error"
         }), 500
-        
-@app.route("/", methods=["GET"])
-def index():
-    return jsonify({
-        "message": "SpotSurfer AI backend is live!",
-        "status": "ok"
-    }), 200
 
 # Run the Flask app
 if __name__ == '__main__':
