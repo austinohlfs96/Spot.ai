@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -30,10 +30,10 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
   const recentAiMessage = messages.filter(msg => msg.sender === 'ai').slice(-1)[0];
 
   return (
-    <Box mt={4} style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', position: 'relative', backgroundColor: '#4F8EDB' }}>
-      <Box style={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', width: '100%', position: 'relative' }}>
+    <Box sx={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', position: 'relative', backgroundColor: '#4F8EDB', padding: '20px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'center', width: '100%', position: 'relative' }}>
         {recentUserMessage && (
-          <Box style={{ width: 'auto', display: 'flex', alignSelf: 'flex-start', marginBottom: '20px', marginLeft: '20px', marginTop: '20px' }}>
+          <Box sx={{ width: 'auto', display: 'flex', alignSelf: 'flex-start', marginBottom: '20px', marginLeft: '20px', marginTop: '20px' }}>
             <Message key={recentUserMessage.id} message={recentUserMessage.content} sender={recentUserMessage.sender} />
           </Box>
         )}
@@ -45,7 +45,7 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
         <Bone isThrown={isThrown} x={coords.x} y={coords.y} />
 
         <Box 
-          style={{ 
+          sx={{ 
             position: 'relative', 
             display: 'inline-block', 
             textAlign: 'left',
@@ -63,12 +63,12 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
         >
           <div>
             {isLoading ? (
-              <Typography variant="body1" style={{ color: '#333', minWidth: '80px' }}>
+              <Typography variant="body1" sx={{ color: '#333', minWidth: '80px' }}>
                 Thinking<span className="ellipsis"></span>
               </Typography>
             ) : (
               recentAiMessage && (
-                <Typography variant="body1" style={{ color: '#333' }}>
+                <Typography variant="body1" sx={{ color: '#333' }}>
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {recentAiMessage.content}
                   </ReactMarkdown>
@@ -77,7 +77,7 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
             )}
           </div>
           <Box
-            style={{
+            sx={{
               position: 'absolute',
               bottom: '-10px',
               left: '60px',

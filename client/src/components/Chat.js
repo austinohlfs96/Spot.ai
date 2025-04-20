@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, TextField, Button, Box } from '@material-ui/core';
+import { Container, TextField, Button, Box } from '@mui/material';
 import ResponseDisplay from './ResponseDisplay';
 
 const Chat = () => {
@@ -9,7 +9,7 @@ const Chat = () => {
   const [isThrown, setIsThrown] = useState(false);
   const [isTTSOn, setIsTTSOn] = useState(false); // TTS toggle state
 
-  // ✅ Text-to-speech handler defined before useEffect
+  // Text-to-speech handler defined before useEffect
   const handleTextToSpeech = useCallback(async (text) => {
     if (!isTTSOn) return;
 
@@ -28,7 +28,7 @@ const Chat = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'xi-api-key': 'sk_18ace37fd0d8ac72620a1dc62c05dc089fd7aba629ab8631', // ⚠️ Consider securing this key on the backend
+        'xi-api-key': 'sk_18ace37fd0d8ac72620a1dc62c05dc089fd7aba629ab8631', // Consider securing this key on the backend
       },
       body: JSON.stringify({
         text: strippedText,
@@ -49,7 +49,7 @@ const Chat = () => {
     }
   }, [isTTSOn]);
 
-  // ✅ Only runs on mount and when TTS is toggled
+  // Only runs on mount and when TTS is toggled
   useEffect(() => {
     const introMessage = {
       content: `Hi there! Try asking a question about SpotSurfer to get started.\n
@@ -101,9 +101,9 @@ const Chat = () => {
   };
 
   return (
-    <Container style={{ padding: 0 }}>
+    <Container sx={{ padding: 0 }}>
       <ResponseDisplay messages={messages} isLoading={loading} isThrown={isThrown} />
-      <Box mt={4}>
+      <Box sx={{ mt: 4 }}>
         <TextField
           label="Ask Spot..."
           fullWidth
@@ -115,7 +115,7 @@ const Chat = () => {
           disabled={loading}
         />
       </Box>
-      <Box mt={2} style={{display:"flex", justifyContent:"space-around"}}>
+      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-around' }}>
         <Button variant="contained" color="primary" onClick={handleSendMessage} disabled={loading}>
           {loading ? 'Sending...' : 'Send'}
         </Button>

@@ -1,6 +1,6 @@
 // App.js
 import React from 'react';
-import { Container } from '@material-ui/core';
+import { Container } from '@mui/material';
 import Chat from './components/Chat';
 import Header from './components/Header';
 import Footer from './components/Footer';

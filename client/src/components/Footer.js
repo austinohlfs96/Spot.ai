@@ -1,47 +1,35 @@
 import React from 'react';
-import { Box, Typography, Link } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import StackIcon from 'tech-stack-icons';
+import { Box, Typography, Link } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const useStyles = makeStyles((theme) => ({
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6, 0),
-  },
-  heart: {
-    color: 'red',
-  },
-  link: {
-    fontWeight: 'bold',
-    textDecoration: 'underline',
-  },
-}));
-
-function Footer() {
-  const classes = useStyles();
-
+const Footer = () => {
   return (
-    <Box className={classes.footer} mt={5}>
-      
-      <Typography variant="body2" color="textSecondary" align="center">
+    <Box sx={{
+      backgroundColor: 'primary.main',
+      color: 'white',
+      padding: '1rem 0',
+      textAlign: 'center',
+      mt: 5
+    }}>
+      <Typography variant="body2">
         {'Coded with '}
-        <span className={classes.heart}>❤️</span>
+        <span style={{color: 'red'}}>❤️</span>
         {' by '}
-        <Link href="http://austinohlfs.com" className={classes.link}>
+        <Link href="http://austinohlfs.com" sx={{fontWeight: 'bold', textDecoration: 'underline'}}>
           Austin Ohlfs
         </Link>
       </Typography>
-      <Typography variant="body2" color="textSecondary" align="center">
+      <Typography variant="body2">
         {'© '}
         {new Date().getFullYear()}
         {' Spot. All rights reserved.'}
       </Typography>
-      <Typography variant="body2" color="textSecondary" align="center">
+      <Typography variant="body2">
         {'Powered by '}
-        <StackIcon name='openai' title='openai' style={{ width: '20px', height: '20px' }}/>
+        <img src="https://cdn.jsdelivr.net/npm/tech-stack-icons@1.0.0/icons/openai.svg" style={{width: '20px', height: '20px'}} alt="openai"/>
       </Typography>
     </Box>
   );
-}
+};
 
 export default Footer;
