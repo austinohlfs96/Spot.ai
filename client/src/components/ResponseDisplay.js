@@ -1,29 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Box, Typography } from '@material-ui/core';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 import Message from './Message';
 import Avatar from './Avatar';
 import Bone from './Bone';
 
-
-
 function ResponseDisplay({ messages = [], isLoading, isThrown }) {
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const mouthRef = useRef(null);
-  
 
   useEffect(() => {
     const updateCoordinates = () => {
       if (mouthRef.current) {
         const mouthRect = mouthRef.current.getBoundingClientRect();
-        console.log(mouthRect);
         setCoords({
-          x: mouthRect.left, // Adjust for bone width
-          y: mouthRect.top  // Adjust for bone height
+          x: mouthRect.left,
+          y: mouthRect.top
         });
       }
     };
     updateCoordinates();
-
     window.addEventListener('resize', updateCoordinates);
     return () => window.removeEventListener('resize', updateCoordinates);
   }, [isThrown]);
@@ -60,6 +58,7 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
             wordWrap: 'break-word',
             alignSelf: 'flex-end',
             margin: '20px',
+            overflowX: 'auto'
           }}
         >
           <div>
@@ -70,7 +69,9 @@ function ResponseDisplay({ messages = [], isLoading, isThrown }) {
             ) : (
               recentAiMessage && (
                 <Typography variant="body1" style={{ color: '#333' }}>
-                  <Message message={recentAiMessage.content} sender={recentAiMessage.sender} />
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {recentAiMessage.content}
+                  </ReactMarkdown>
                 </Typography>
               )
             )}

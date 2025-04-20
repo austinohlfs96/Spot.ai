@@ -1,179 +1,160 @@
-import markdown2
-import json
 import os
 import logging
-import time
-import datetime  # Import datetime module
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 import openai
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from dotenv import load_dotenv
+from weather import WeatherService
+from traffic import TrafficService
+import markdown2
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-# Load environment variables from the .env file
+# Load environment variables
 load_dotenv()
+weather_api_key = os.getenv('WEATHER_API_KEY')
+maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
-print(os.getenv('OPENAI_API_KEY'))
+# Initialize services
+weather_service = WeatherService(weather_api_key)
+traffic_service = TrafficService(maps_api_key)
 
-# Get the API key from the environment variable
-api_key = os.getenv('OPENAI_API_KEY')
-if not api_key:
-    raise ValueError("API key not found. Please check your .env file and environment variables.")
-
-openai.api_key = api_key
-
-# Initialize Flask app and enable CORS
-app = Flask(__name__, static_folder='../client/build', static_url_path='')
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
+# Initialize Flask app
+app = Flask(__name__)
 CORS(app)
 
-# Function to get current date and time
-def get_current_datetime():
-    now = datetime.datetime.now()
-    return now.strftime("%Y-%m-%d %H:%M:%S")
-  
-# Global variable to store conversation history
-conversation_history = [
-    {"role": "system", "content": f"""You are Spot, a friendly and knowledgeable local guide AI. Your goal is to provide accurate, up-to-date information about local establishments, events, and activities. Here are your key characteristics:
+# Load knowledge base
+knowledge_base_path = 'knowledge_base.txt'
 
-1. Focus: You only discuss local businesses, events, and activities. If asked about non-local topics, politely redirect the conversation.
-
-2. Knowledge: You have extensive information about local attractions, restaurants, events, and hidden gems.
-
-3. Helpfulness: You provide practical details such as business hours, website links, and directions when available.
-
-4. Money-saving: You share information about deals, discounts, happy hours, and special offers to help users save money.
-
-5. Personalization: You tailor recommendations based on user preferences and previous conversation context.
-
-6. Conciseness: Your responses are informative but concise, offering to elaborate if the user requests more details.
-
-7. Accuracy: If you're unsure about any information, you clearly state this and suggest where the user might find accurate details.
-
-8. Up-to-date: You consider the current date and time ({get_current_datetime()}) when making recommendations or discussing events.
-
-9. Friendly tone: While being direct and informative, maintain a warm and approachable tone.
-
-Remember, your primary function is to assist with local information. Politely decline to answer questions outside this scope."""
-    }
-]
-
-def fetch_completion(messages, retries=5, backoff_factor=2):
+def load_knowledge_base():
     try:
+        with open(knowledge_base_path, 'r') as f:
+            return f.read()
+    except Exception as e:
+        logging.error(f"Error loading knowledge base: {e}")
+        return ""
+
+knowledge_base = load_knowledge_base()
+
+# Query OpenAI with constructed prompt
+def query_contextual_response(prompt):
+    try:
+        logging.info(f"Sending prompt to OpenAI:\n{prompt}")
         response = openai.ChatCompletion.create(
             model="gpt-4o",
-            messages=messages,
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.5,
-            max_tokens=1500,
+            max_tokens=700
         )
-        return response
-    except openai.error.RateLimitError as e:
-        if retries > 0:
-            wait_time = backoff_factor ** (5 - retries)
-            logging.info(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-            return fetch_completion(messages, retries - 1, backoff_factor)
-        else:
-            logging.error("Rate limit exceeded. Please try again later.")
-            return None
-    except openai.error.OpenAIError as e:
-        logging.error(f"OpenAI API error occurred: {e}")
-        return None
+        return response['choices'][0]['message']['content'].strip()
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
-        return None
+        logging.error(f"Error querying OpenAI: {e}")
+        return "Sorry, I couldn't get the information right now. Please try again shortly."
 
-def format_response(response):
-    try:
-        if 'choices' in response and len(response['choices']) > 0:
-            response_text = response['choices'][0]['message']['content']
-            html = markdown2.markdown(response_text)
-            return html
-        else:
-            logging.error("Unexpected response format: 'choices' not found or empty.")
-            return None
-    except Exception as e:
-        logging.error(f"Error formatting response: {e}")
-        return None
+# Optional helper to extract simple "from X to Y" traffic routing
+def extract_origin_destination(text):
+    import re
+    match = re.search(r'from ([a-zA-Z\s]+?) to ([a-zA-Z\s]+?)(?:[\.,\?]|$)', text.lower())
+    if match:
+        origin = match.group(1).strip().title()
+        destination = match.group(2).strip().title()
+        return origin, destination
+    return None, None
 
+# Generate prompt with weather, traffic, reservation, and user info
+def generate_contextual_prompt(user_question, user_location=None, reservation_details=None):
+    weather_info = ""
+    traffic_info = ""
+    location_info = ""
+
+    # Weather at current location
+    if user_location:
+        weather = weather_service.fetch_weather(user_location)
+        if weather:
+            weather_info += f"\nDetailed weather at your location ({user_location}):\n{weather_service.format_weather_info(weather, user_location)}\n"
+
+    # Weather & details at reservation location
+    if reservation_details:
+        destination = reservation_details.get('destination')
+        reservation_date = reservation_details.get('date')
+
+        if destination:
+            weather = weather_service.fetch_weather(destination)
+            if weather:
+                weather_info += f"\nDetailed weather at your destination ({destination}):\n{weather_service.format_weather_info(weather, destination)}\n"
+
+        if reservation_date:
+            location_info += f"Reservation date: {reservation_date}\n"
+
+    # Route weather
+    if "route" in user_question.lower() or "travel" in user_question.lower():
+        key_stops = ["Parker", "Idaho Springs", "Silverthorne", "Vail"]
+        weather_info += f"\nWeather along key stops:\n{weather_service.get_weather_along_route(key_stops)}"
+
+    # Add traffic summary if origin/destination found in question
+    origin, destination = extract_origin_destination(user_question)
+    if origin and destination:
+        traffic_data = traffic_service.get_traffic_summary(origin, destination)
+        traffic_info = traffic_service.format_traffic_info(traffic_data)
+
+    # Final prompt construction
+    prompt = f"""
+You are Spot, the official AI assistant for SpotSurfer Parking.
+Your job is to provide helpful, concise, and always SpotSurfer-focused parking advice, suggestions, and answers.
+
+Use the following knowledge base, real-time weather, live traffic, and user context to help users make informed parking decisions and encourage them to book with SpotSurfer:
+
+USER CONTEXT:
+{location_info}
+
+KNOWLEDGE BASE:
+{knowledge_base}
+
+{weather_info}
+{traffic_info}
+
+Question: {user_question}
+
+Remember to:
+- Include specific weather and traffic details when relevant
+- Provide parking recommendations based on current travel conditions
+- Always reference SpotSurfer parking options in your response
+
+Answer:
+"""
+    return prompt
+
+# Flask route to handle chatbot queries
 @app.route('/ask', methods=['POST'])
 def ask():
-    global conversation_history
-
-    data = request.json
-    user_message = data.get('message', '')
-
-    # Log the received message
-    logging.info(f"Received message: {user_message}")
-
-    # Add the new user message to the conversation history
-    conversation_history.append({"role": "user", "content": user_message})
-
-    # Log the current conversation history
-    logging.info(f"Current conversation history: {conversation_history}")
-
-    # Fetch the response from the API using the conversation history
-    response = fetch_completion(conversation_history)
-
-    if response:
-        formatted_response = format_response(response)
-        if formatted_response:
-            # Add the assistant's response to the conversation history
-            conversation_history.append({"role": "assistant", "content": response['choices'][0]['message']['content']})
-
-            # Log the assistant's response
-            logging.info(f"Assistant response: {response['choices'][0]['message']['content']}")
-
-            return jsonify({'response': formatted_response})
-        else:
-            return jsonify({'response': 'Failed to format response.'}), 500
-    else:
-        return jsonify({'response': 'Failed to fetch a response.'}), 500
-
-@app.route('/clear', methods=['POST'])
-def clear():
-    global conversation_history
-    conversation_history = [
-    {"role": "system", "content": f"""You are Spot, a friendly and knowledgeable local guide AI. Your goal is to provide accurate, up-to-date information about local establishments, events, and activities. Here are your key characteristics:
-
-1. Focus: You only discuss local businesses, events, and activities. If asked about non-local topics, politely redirect the conversation.
-
-2. Knowledge: You have extensive information about local attractions, restaurants, events, and hidden gems.
-
-3. Helpfulness: You provide practical details such as business hours, website links, and directions when available.
-
-4. Money-saving: You share information about deals, discounts, happy hours, and special offers to help users save money.
-
-5. Personalization: You tailor recommendations based on user preferences and previous conversation context.
-
-6. Conciseness: Your responses are informative but concise, offering to elaborate if the user requests more details.
-
-7. Accuracy: If you're unsure about any information, you clearly state this and suggest where the user might find accurate details.
-
-8. Up-to-date: You consider the current date and time ({get_current_datetime()}) when making recommendations or discussing events.
-
-9. Friendly tone: While being direct and informative, maintain a warm and approachable tone.
-
-Remember, your primary function is to assist with local information. Politely decline to answer questions outside this scope."""
-    }
-]
-    return jsonify({'response': 'Conversation history cleared.'})
-
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_react_app(path):
     try:
-        if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
-            return send_from_directory(app.static_folder, path)
-        else:
-            return send_from_directory(app.static_folder, 'index.html')
+        data = request.json
+        message = data.get('message', '')
+        user_location = data.get('user_location')
+        reservation_details = data.get('reservation_details', {})
+
+        prompt = generate_contextual_prompt(message, user_location, reservation_details)
+        ai_response = query_contextual_response(prompt)
+
+        html_response = markdown2.markdown(ai_response)
+
+        return jsonify({
+            "response": ai_response,
+            "html": html_response,
+            "status": "success"
+        })
     except Exception as e:
-        logging.error(f"Error serving React app: {e}")
-        return jsonify({'response': 'Error serving React app.'}), 500
+        logging.error(f"Error handling /ask request: {e}")
+        return jsonify({
+            "response": "There was an error processing your request.",
+            "status": "error"
+        }), 500
 
-
+# Run the Flask app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
