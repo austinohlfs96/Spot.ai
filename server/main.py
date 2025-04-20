@@ -56,7 +56,6 @@ def query_contextual_response(prompt):
         logging.error(f"Error querying OpenAI: {e}")
         return "Sorry, I couldn't get the information right now. Please try again shortly."
 
-# Optional helper to extract simple "from X to Y" traffic routing
 def extract_origin_destination(text):
     import re
     match = re.search(r'from ([a-zA-Z\s]+?) to ([a-zA-Z\s]+?)(?:[\.,\?]|$)', text.lower())
@@ -66,7 +65,6 @@ def extract_origin_destination(text):
         return origin, destination
     return None, None
 
-# Generate prompt with weather, traffic, reservation, and user info
 def generate_contextual_prompt(user_question, user_location=None, reservation_details=None):
     weather_info = ""
     traffic_info = ""
@@ -124,8 +122,6 @@ Answer:
 """
     return prompt
 
-# === Routes ===
-
 @app.route('/ask', methods=['POST'])
 def ask():
     try:
@@ -151,12 +147,15 @@ def ask():
             "status": "error"
         }), 500
 
-# Serve React frontend
 @app.route('/')
 def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
+    index_path = os.path.join(app.static_folder, 'index.html')
+    if os.path.exists(index_path):
+        return send_from_directory(app.static_folder, 'index.html')
+    return jsonify({
+        "error": "Frontend not built. Run `npm run build --prefix client`"
+    }), 500
 
-# React Router fallback
 @app.errorhandler(404)
 def serve_fallback(e):
     index_path = os.path.join(app.static_folder, 'index.html')
@@ -166,7 +165,5 @@ def serve_fallback(e):
         "error": "Frontend not built. Run `npm run build --prefix client`"
     }), 500
 
-
-# Run the app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
