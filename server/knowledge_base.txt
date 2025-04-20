@@ -8,7 +8,7 @@ Arrabelle Valet
   MaxHeight: 14 ft
   Packs/Passes: 6 Pack Saturday Only, Season Pass
   Type: Valet no overnight garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Taver on the Square $$$$, Chop house $$$$, Blue Moose $$, Garfinkels $$, El Sabor $$,
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool:Lionshead Ski School and Ticket office
@@ -22,7 +22,7 @@ The Hythe
   MaxHeight: Standard vehicles only
   Packs/Passes:  Season Pass
   Type: Valet No Overnight Garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool:Lionshead Ski School and Ticket office
@@ -36,12 +36,12 @@ The Park Hyatt
   MaxHeight: Standard vehicles only
   Packs/Passes:  Season Pass
   Type: Valet No Overnight Garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
-  NearbySkiSchool:Lionshead Ski School and Ticket office
+  NearbySkiSchool: Beaver Creek Ski School
 
-BlueBird Ski Lockers - $70/day - ski lockers available - at avon station bus stop/across from weston gondola - no overnight
+BlueBird Ski Lockers - $70/day - ski lockers available - at Avon station bus stop/across from weston gondola - no overnight
   Price:$70/day no hourly no overnight
   Address: 137 Benchmark Road Suite C 103A, Avon, CO 81620
   Amenities: Restrooms
@@ -50,7 +50,7 @@ BlueBird Ski Lockers - $70/day - ski lockers available - at avon station bus sto
   Packs/Passes:  Season Pass
   Type: No Overnight Garage
   NearbyLifts: Westin River Front Gondola
-  NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
+  NearbyResturants: Rocky Taco, Tacino, Bobs Places, Stoke and Rye
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool: Base of Beaver Creek
 
@@ -77,7 +77,7 @@ Vail Run Resort - $80/day
   MaxHeight: Standard vehicles only
   Packs/Passes:  Season Pass
   Type: Valet No Overnight Garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool:Lionshead Ski School and Ticket office
@@ -91,7 +91,7 @@ Vail Run Resort - $80/day
   MaxHeight: Standard vehicles only
   Packs/Passes:  Season Pass
   Type: Valet No Overnight Garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool:Lionshead Ski School and Ticket office
@@ -105,13 +105,13 @@ Evergreen Lodge - $30/day - Self Parking - free breakfast - no overnight
   MaxHeight: Standard vehicles only
   Packs/Passes:  Season Pass
   Type: Valet No Overnight Garage
-  NearbyLifts: Eagle Bahn Gondola, Born Free Chail
+  NearbyLifts: Eagle Bahn Gondola, Born Free Chair
   NearbyResturants: Margie's Haas, Revel Lounge, Mountain Ration Grab & Go, 10th Mountain Whiskey Bar, The Little Dinner, Beyond Sushi Thai
   NearbyShops: Chater sports, Oakely, Vail sports, Christy sports, Rocket Fizz, Patagonia, Avalon Clothing
   NearbySkiSchool:Lionshead Ski School and Ticket office
 
 
-Spotsurfer COupon Codes:
+Spotsurfer Coupon Codes:
 High Rockies Discount Code: HIGHROCKIES for 20% off
 
 FAQ:
