@@ -8,7 +8,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isThrown, setIsThrown] = useState(false);
-  const [isTTSOn, setIsTTSOn] = useState(false); // TTS toggle state
+  // const [isTTSOn, setIsTTSOn] = useState(false); // TTS toggle state
 
 
 
