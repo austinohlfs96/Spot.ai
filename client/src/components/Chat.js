@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, TextField, Button, Box } from '@material-ui/core';
 import ResponseDisplay from './ResponseDisplay';
 
@@ -47,22 +47,21 @@ const Chat = () => {
   //   window.speechSynthesis.speak(utterance);
   // };
 
-  const handleTextToSpeech = async (text) => {
-    if (!isTTSOn) return; // Exit if TTS is off
+  const handleTextToSpeech = useCallback(async (text) => {
+    if (!isTTSOn) return;
     let strippedText = text.replace(/<\/?[^>]+(>|$)/g, '');
-  
-    // Remove Markdown formatting
     strippedText = strippedText
-      .replace(/(\*\*|__)(.*?)\1/g, '$2') // Bold
-      .replace(/(\*|_)(.*?)\1/g, '$2') // Italic
-      .replace(/~~(.*?)~~/g, '$1') // Strikethrough
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Links
-      .replace(/!\[(.*?)\]\(.*?\)/g, '') // Images
-      .replace(/#+\s*(.*)/g, '$1') // Headers
-      .replace(/>\s*(.*)/g, '$1') // Blockquotes
-      .replace(/`{1,2}([^`]+)`{1,2}/g, '$1'); // Inline code
-    const apiKey = 'sk_18ace37fd0d8ac72620a1dc62c05dc089fd7aba629ab8631'; // Replace with your actual API key
-    const voiceId = 'bIHbv24MWmeRgasZH58o'; // Replace with the voice ID you want to use
+      .replace(/(\*\*|__)(.*?)\1/g, '$2')
+      .replace(/(\*|_)(.*?)\1/g, '$2')
+      .replace(/~~(.*?)~~/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/!\[(.*?)\]\(.*?\)/g, '')
+      .replace(/#+\s*(.*)/g, '$1')
+      .replace(/>\s*(.*)/g, '$1')
+      .replace(/`{1,2}([^`]+)`{1,2}/g, '$1');
+  
+    const apiKey = 'sk_18ace37fd0d8ac72620a1dc62c05dc089fd7aba629ab8631'; // ⛔ Caution: Exposing API key
+    const voiceId = 'bIHbv24MWmeRgasZH58o';
   
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
       method: 'POST',
@@ -71,7 +70,7 @@ const Chat = () => {
         'xi-api-key': apiKey,
       },
       body: JSON.stringify({
-        text: text,
+        text,
         voice_settings: {
           stability: 0.5,
           similarity_boost: 0.75,
@@ -87,7 +86,7 @@ const Chat = () => {
     } else {
       console.error('Error fetching TTS from ElevenLabs:', response.statusText);
     }
-  };
+  }, [isTTSOn]);
   
   
 
