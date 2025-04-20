@@ -159,7 +159,13 @@ def serve_index():
 # React Router fallback
 @app.errorhandler(404)
 def serve_fallback(e):
-    return send_from_directory(app.static_folder, 'index.html')
+    index_path = os.path.join(app.static_folder, 'index.html')
+    if os.path.exists(index_path):
+        return send_from_directory(app.static_folder, 'index.html')
+    return jsonify({
+        "error": "Frontend not built. Run `npm run build --prefix client`"
+    }), 500
+
 
 # Run the app
 if __name__ == '__main__':
