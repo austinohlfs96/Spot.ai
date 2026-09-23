@@ -18,7 +18,9 @@ maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # Initialize Flask app and enable CORS
-app = Flask(__name__, static_folder='client/build', static_url_path='')
+server_dir = os.path.dirname(os.path.abspath(__file__))
+frontend_dir = os.path.join(os.path.dirname(server_dir), 'client', 'build')
+app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
 CORS(app)
 
 # Initialize services
@@ -26,7 +28,7 @@ weather_service = WeatherService(weather_api_key)
 traffic_service = TrafficService(maps_api_key)
 
 # Load knowledge base
-knowledge_base_path = 'knowledge_base.txt'
+knowledge_base_path = os.path.join(server_dir, 'knowledge_base.txt')
 
 def load_knowledge_base():
     try:
